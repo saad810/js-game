@@ -1,3 +1,4 @@
+import { GameLoop } from './src/GameLoop';
 import { resource } from './src/Resource';
 import { Sprite } from './src/Sprite';
 import { Vector2 } from './src/Vector2';
@@ -35,7 +36,9 @@ const draw = () => {
     hero.drawImage(ctx, heroPosOffsetX, heroPosOffsetY);
 
 }
-setInterval(() => {
-    console.log("Drawing frame");
-    draw();
-}, 300);
+const update = ()=>{
+    hero.frame++;
+}
+
+const gameLoop = new GameLoop(update, draw);
+gameLoop.start();

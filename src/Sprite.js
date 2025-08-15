@@ -34,8 +34,8 @@ export class Sprite {
                         this.frameSize.x * horizontal,
                         this.frameSize.y * vertical
                     )
-
                 )
+                frameCount++;
             }
         }
     }
@@ -47,10 +47,10 @@ export class Sprite {
         // find correct sprite sheet frame
         let frameCoordX = 0;
         let frameCoordY = 0;
-        const frame = this.frameMap.get(this.frame);
-        if (frame) {
-            frameCoordX = frame.x;
-            frameCoordY = frame.y;
+        const frameVector = this.frameMap.get(this.frame);
+        if (frameVector) {
+            frameCoordX = frameVector.x;
+            frameCoordY = frameVector.y;
         }
         const frameSizeX = this.frameSize.x;
         const frameSizeY = this.frameSize.y;
