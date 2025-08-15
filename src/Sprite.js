@@ -11,6 +11,7 @@ export class Sprite {
         position,
 
     }) {
+        
         this.resource = resource; //the image path or url
         this.frameSize = frameSize ?? new Vector2(16, 16);
         this.hFrame = hFrame ?? 1;

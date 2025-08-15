@@ -1,7 +1,9 @@
 import { Keys } from './constants';
 import { GameLoop } from './src/GameLoop';
-import { gridCells } from './src/helpers/grid';
+import { gridCells, isSpaceFree } from './src/helpers/grid';
+import { moveTowards } from './src/helpers/moveTowards';
 import { Input } from './src/Input';
+import { walls } from './src/Levels/Level1';
 import { resource } from './src/Resource';
 import { Sprite } from './src/Sprite';
 import { Vector2 } from './src/Vector2';
@@ -29,7 +31,53 @@ const hero = new Sprite({
     position: new Vector2(gridCells(6), gridCells(5))
 })
 // const heroPos = new Vector2(16 * 6, 16 * 5);
+const heroDestinationPOS = hero.position.duplicate();
+const input = new Input();
 
+const tryMove = () => {
+    if (!input.direction) {
+        return;
+    }
+
+    // tracking current destination position
+    let nextX = heroDestinationPOS.x;
+    let nextY = heroDestinationPOS.y;
+
+    let gridSize = 16;
+
+    if (input.direction === Keys.UP) {
+        nextY -= gridSize;
+        hero.frame = 6
+    } else if (input.direction === Keys.DOWN) {
+        nextY += gridSize;
+        hero.frame = 0
+
+    } else if (input.direction === Keys.LEFT) {
+        nextX -= gridSize;
+        hero.frame = 9
+    } else if (input.direction === Keys.RIGHT) {
+        nextX += gridSize;
+        hero.frame = 3
+    }
+
+    // check if pos is free
+    if (isSpaceFree(walls, nextX, nextY)) {
+        heroDestinationPOS.x = nextX;
+        heroDestinationPOS.y = nextY;
+    }
+
+}
+const update = () => {
+    // console.log(hero.position)
+    const distance = moveTowards(hero, heroDestinationPOS, 1)
+    const hasArrived = distance <= 1;
+    if (hasArrived) {
+        // console.log("Hero has reached the destination");
+        tryMove();
+    }
+    // console.log(distance)
+
+}
 const draw = () => {
     const heroOffset = new Vector2(-8, -22);
     const heroPosOffsetX = hero.position.x + heroOffset.x;
@@ -40,25 +88,9 @@ const draw = () => {
     shadow.drawImage(ctx, heroPosOffsetX, heroPosOffsetY);
     hero.drawImage(ctx, heroPosOffsetX, heroPosOffsetY);
 }
-const input = new Input();
 
-const update = () => {
-    // console.log(hero.position)
-    if (input.direction === Keys.UP) {
-        hero.position.y -= 1;
-        hero.frame = 6
-    } else if (input.direction === Keys.DOWN) {
-        hero.position.y += 1;
-        hero.frame = 0
 
-    } else if (input.direction === Keys.LEFT) {
-        hero.position.x -= 1;
-        hero.frame = 9
-    } else if (input.direction === Keys.RIGHT) {
-        hero.position.x += 1;
-        hero.frame = 3
-    }
-}
+
 
 const gameLoop = new GameLoop(update, draw);
 gameLoop.start();
