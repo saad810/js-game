@@ -1,4 +1,7 @@
+import { Keys } from './constants';
 import { GameLoop } from './src/GameLoop';
+import { gridCells } from './src/helpers/grid';
+import { Input } from './src/Input';
 import { resource } from './src/Resource';
 import { Sprite } from './src/Sprite';
 import { Vector2 } from './src/Vector2';
@@ -23,22 +26,40 @@ const hero = new Sprite({
     hFrame: 3,
     vFrame: 8,
     frame: 1,
+    position: new Vector2(gridCells(6), gridCells(5))
 })
-const heroPos = new Vector2(16 * 6, 16 * 5);
-const heroOffset = new Vector2(-8, -22);
-const heroPosOffsetX = heroPos.x + heroOffset.x;
-const heroPosOffsetY = heroPos.y + heroOffset.y;
+// const heroPos = new Vector2(16 * 6, 16 * 5);
 
 const draw = () => {
+    const heroOffset = new Vector2(-8, -22);
+    const heroPosOffsetX = hero.position.x + heroOffset.x;
+    const heroPosOffsetY = hero.position.y + heroOffset.y;
+
     sky.drawImage(ctx, 0, 0);
     ground.drawImage(ctx, 0, 0);
     shadow.drawImage(ctx, heroPosOffsetX, heroPosOffsetY);
     hero.drawImage(ctx, heroPosOffsetX, heroPosOffsetY);
-
 }
-const update = ()=>{
-    hero.frame++;
+const input = new Input();
+
+const update = () => {
+    // console.log(hero.position)
+    if (input.direction === Keys.UP) {
+        hero.position.y -= 1;
+        hero.frame = 6
+    } else if (input.direction === Keys.DOWN) {
+        hero.position.y += 1;
+        hero.frame = 0
+
+    } else if (input.direction === Keys.LEFT) {
+        hero.position.x -= 1;
+        hero.frame = 9
+    } else if (input.direction === Keys.RIGHT) {
+        hero.position.x += 1;
+        hero.frame = 3
+    }
 }
 
 const gameLoop = new GameLoop(update, draw);
 gameLoop.start();
+
